@@ -15,6 +15,9 @@ export class BackofficeCourse extends AggregateRoot {
     this.duration = duration;
   }
 
+  // fromPrimitivesとの違い
+  // 用途：ユーザが画面から新規作成ボタンを押したとき
+  // IDの生成、初期状態のバリデーション、作成されましたという記録
   static create(
     id: BackofficeCourseId,
     name: BackofficeCourseName,
@@ -25,6 +28,10 @@ export class BackofficeCourse extends AggregateRoot {
     return course;
   }
 
+  // プリミティブ -> ドメイン変換
+  // createとの違い
+  // DBからfindしてデータを取ってきたとき
+  // データの詰め替えのみ。すでに過去の出来事。そのため新規のドメインイベントは発行しない
   static fromPrimitives(plainData: { id: string; name: string; duration: string }): BackofficeCourse {
     return new BackofficeCourse(
       new BackofficeCourseId(plainData.id),
@@ -33,6 +40,7 @@ export class BackofficeCourse extends AggregateRoot {
     );
   }
 
+  // ドメイン -> 外の世界(プリミティブ)変換
   toPrimitives() {
     return {
       id: this.id.value,
